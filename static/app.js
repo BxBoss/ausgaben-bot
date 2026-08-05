@@ -8,7 +8,6 @@ const resultsBody = document.getElementById("resultsBody");
 const commitBtn = document.getElementById("commitBtn");
 const statusEl = document.getElementById("status");
 
-dropzone.addEventListener("click", () => fileInput.click());
 dropzone.addEventListener("dragover", (e) => {
   e.preventDefault();
   dropzone.classList.add("dragover");
