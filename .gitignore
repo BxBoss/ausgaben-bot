@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+venv/
+.venv/
+.env
+credentials.json
+uploads/*.pdf
+*.tmp.*
+.DS_Store
+Thumbs.db
+dedupe_log.json
