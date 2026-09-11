@@ -33,7 +33,13 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "rossmann", "serum", "adapalen", "zahnseide",
     ],
     "Transport": ["parken", "parkhaus", "deutsche bahn", "db vertrieb", "strafzettel", "bus", "bahn", "uber", "taxi"],
-    "Sparen/Invest": ["trade republic", " tr ", "scalable", "etf", "depot", "sparplan"],
+    "Sparen/Invest": [
+        "trade republic", " tr ", "scalable", "etf", "depot", "sparplan",
+        # eigene Ueberweisung aufs andere Konto (100 EUR) zaehlt laut Nils
+        # ebenfalls als Sparen/Invest -- Formulierung im echten Kontoauszug
+        # noch nicht bekannt, hier best-effort, ggf. an echtem PDF kalibrieren.
+        "umbuchung", "eigenes konto", "sparkonto", "tagesgeld",
+    ],
 }
 
 INCOME_KEYWORDS: dict[str, list[str]] = {
