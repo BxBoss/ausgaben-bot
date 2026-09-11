@@ -22,11 +22,16 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "chapeau", "aquamarina", "food source", "gelateria", "flox burger",
         "green midi", "burger n shake", "merzenich", "diamond taste",
         "medasia", "big g", "tiffany s gelateria",
+        # zweite Runde: Griechenland-/Amsterdam-/Strasbourg-Reise
+        "star coffee", "burger colony", "bengels", "weinbar", "franz josef",
+        "elaia", "tavern", "aladdin", "kalamaki", "tzatzi", "albert heijn",
+        "horeca", "jumbo amsterdam", "bunsbar",
     ],
     "Klamotten": [
         "zara", "h&m", "cos", "primark", "vinted", "second hand", "schuhe",
         "zalando", "about you", "c&a", "bershka", "pull&bear", "boutique",
         "vintage", "fashion retail", "intersport", "hennes", "secondplus",
+        "decathlon",
     ],
     "Flüge": ["flug ", "flugüber", "ryanair", "lufthansa", "eurowings", "easyjet", "condor"],
     "Hotel": ["hotel", "airbnb", "booking.com", "booking ", "bravonext"],
@@ -38,7 +43,7 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "museum", "fort st elmo", "blue grotto", "bluegrotto", "national war",
         "smash tag", "footloose", "stadtpark", "eventim", "gianpula",
         "jlm marketing", "eventworks", "geisterklamm", "salinarium",
-        "tripass", "toyroom",
+        "tripass", "toyroom", "billard", "natura artis", "bulldog",
     ],
     "Online": ["amazon", "ebay", "parfuem", "parfüm", "otto", "aliexpress", "shein"],
     "Tank": [
@@ -61,6 +66,7 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "parken", "parkhaus", "deutsche bahn", "db vertrieb", "strafzettel",
         "bus", "bahn", "uber", "taxi", "public trans", "easypark",
         "parkgarage", "bußgeldstelle", "polizeiverwaltungsamt", "triwo hahn",
+        "ktel", "cts-", "ovpay",
     ],
     "Sparen/Invest": [
         "trade republic", " tr ", "scalable", "etf", "depot", "sparplan",
