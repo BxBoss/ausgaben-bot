@@ -34,7 +34,7 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "decathlon",
     ],
     "Flüge": ["flug ", "flugüber", "ryanair", "lufthansa", "eurowings", "easyjet", "condor"],
-    "Hotel": ["hotel", "airbnb", "booking.com", "booking ", "bravonext"],
+    "Hotel": ["hotel", "airbnb", "booking.com", "booking ", "bravonext", "bank of valletta"],
     "Freizeit": [
         "kino", "cinema", "therme", "schwimmbad", "freizeitpark", "konzert",
         "concert", "getyourguide", "hive club", "paceville ent", "club ",
@@ -90,6 +90,9 @@ INCOME_KEYWORDS: dict[str, list[str]] = {
     # das aufs Konto eingezahlt wird). " bar " mit Leerzeichen drumherum,
     # damit es nicht versehentlich in anderen Woertern matcht.
     "Trinkgeld": [" bar ", "einzahlung"],
+    # Erasmus+-Foerderung, ausgezahlt ueber "Bits + Grips gemeinnuetzige
+    # GmbH" als Zwischenstelle -- "erasmus" steht im Verwendungszweck.
+    "Stipendium": ["erasmus"],
 }
 
 EXPENSE_FALLBACK = "Sonstiges"
