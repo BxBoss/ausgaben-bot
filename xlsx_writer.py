@@ -12,9 +12,11 @@ import openpyxl
 DATE_NUMBER_FORMAT = "dd.mm"
 DATA_START_ROW = 42
 # SUMIFS-Formeln in den Monatsblaettern decken diese Bereiche ab --
-# darueber hinaus wuerden neue Zeilen nicht mehr mitgezaehlt.
-AUSGABEN_MAX_ROW = 133
-EINNAHMEN_MAX_ROW = 52
+# darueber hinaus wuerden neue Zeilen nicht mehr mitgezaehlt. Urspruenglich
+# B42:B133/G41:G52 -- auf B42:B300/G42:G100 erweitert, nachdem ein einzelner
+# Reisemonat (Malta) mit 132 Kreditkarten-Buchungen die alte Grenze gesprengt hat.
+AUSGABEN_MAX_ROW = 300
+EINNAHMEN_MAX_ROW = 100
 
 MONTH_SHEET_NAMES = {
     "januar": "Januar ", "februar": "Februar ", "märz": "März ", "maerz": "März ",

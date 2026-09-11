@@ -9,10 +9,12 @@ from __future__ import annotations
 EXPENSE_KEYWORDS: dict[str, list[str]] = {
     "Essen/Trinken": [
         "rewe", "edeka", "kaufland", "aldi", "lidl", "netto", "penny", "real",
-        "globus", "hit", "e center", "supermarkt", "baecker", "bäcker",
-        "cafe", "café", "doener", "döner", "mcdonalds", "mc donalds",
+        "globus", "hit", "e center", "supermarkt", "spar", "baecker", "bäcker",
+        "cafe", "café", "doener", "döner", "mcdonalds", "mc donalds", "mc donald",
         "burger king", "kfc", "restaurant", "imbiss", "kaugummi",
-        "monster energy", "bistro",
+        "monster energy", "bistro", "snack bar", "mini market", "kiosk",
+        "self service", "vending", "wolt", "lieferando", "pastizzeria",
+        "foodstore", "food store", "acai",
     ],
     "Klamotten": [
         "zara", "h&m", "cos", "primark", "vinted", "second hand", "schuhe",
@@ -20,19 +22,25 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
     ],
     "Flüge": ["flug ", "flugüber", "ryanair", "lufthansa", "eurowings", "easyjet", "condor"],
     "Hotel": ["hotel", "airbnb", "booking.com", "booking "],
-    "Freizeit": ["kino", "cinema", "therme", "schwimmbad", "freizeitpark", "konzert", "concert"],
+    "Freizeit": [
+        "kino", "cinema", "therme", "schwimmbad", "freizeitpark", "konzert",
+        "concert", "getyourguide", "hive club", "paceville ent", "club ",
+    ],
     "Online": ["amazon", "ebay", "parfuem", "parfüm", "otto", "aliexpress", "shein"],
     "Tank": ["tank", "tanken", "aral", "shell", "esso", " jet ", "star tankstelle", "total energies"],
     "Abos": [
         "spotify", "netflix", "disney", "apple", "prime video", "dazn",
         "kickboxen", "fitnessstudio", "mcfit", "urban sports", "adobe",
-        "icloud", "venice",
+        "icloud", "venice", "anthropic", "claude sub", "openai", "chatgpt",
     ],
     "Selfcare": [
         "friseur", "haare", "nagelstudio", "kosmetik", "drogerie", "dm ",
-        "rossmann", "serum", "adapalen", "zahnseide",
+        "rossmann", "serum", "adapalen", "zahnseide", "pharmacy", "apotheke",
     ],
-    "Transport": ["parken", "parkhaus", "deutsche bahn", "db vertrieb", "strafzettel", "bus", "bahn", "uber", "taxi"],
+    "Transport": [
+        "parken", "parkhaus", "deutsche bahn", "db vertrieb", "strafzettel",
+        "bus", "bahn", "uber", "taxi", "public trans",
+    ],
     "Sparen/Invest": [
         "trade republic", " tr ", "scalable", "etf", "depot", "sparplan",
         # eigene Ueberweisung aufs andere Konto (100 EUR) zaehlt laut Nils
