@@ -17,41 +17,54 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "foodstore", "food store", "acai", "myconvenience", "convenience",
         "nom nom", "little greens", "kebab", "8 till late", "instastore",
         "onami", "dave's", "daves", "biergarten", "superfood",
+        # aus der vollstaendigen Girokonto/Kreditkarten-Historie (Jan-Sep)
+        "ruhls bestes", "maxims", "habibis", "good food better", "mensa",
+        "chapeau", "aquamarina", "food source", "gelateria", "flox burger",
+        "green midi", "burger n shake", "merzenich", "diamond taste",
+        "medasia", "big g", "tiffany s gelateria",
     ],
     "Klamotten": [
         "zara", "h&m", "cos", "primark", "vinted", "second hand", "schuhe",
         "zalando", "about you", "c&a", "bershka", "pull&bear", "boutique",
-        "vintage", "fashion retail", "intersport",
+        "vintage", "fashion retail", "intersport", "hennes", "secondplus",
     ],
     "Flüge": ["flug ", "flugüber", "ryanair", "lufthansa", "eurowings", "easyjet", "condor"],
-    "Hotel": ["hotel", "airbnb", "booking.com", "booking "],
+    "Hotel": ["hotel", "airbnb", "booking.com", "booking ", "bravonext"],
     "Freizeit": [
         "kino", "cinema", "therme", "schwimmbad", "freizeitpark", "konzert",
         "concert", "getyourguide", "hive club", "paceville ent", "club ",
         # Museen/Sehenswuerdigkeiten/Ausflugsziele -- z.B. "Fort St Elmo
         # National (War Museum)" ist ein Museumsbesuch, keine "Sonstiges"-Buchung.
         "museum", "fort st elmo", "blue grotto", "bluegrotto", "national war",
-        "smash tag", "footloose", "stadtpark",
+        "smash tag", "footloose", "stadtpark", "eventim", "gianpula",
+        "jlm marketing", "eventworks", "geisterklamm", "salinarium",
+        "tripass", "toyroom",
     ],
     "Online": ["amazon", "ebay", "parfuem", "parfüm", "otto", "aliexpress", "shein"],
-    "Tank": ["tank", "tanken", "aral", "shell", "esso", " jet ", "star tankstelle", "total energies"],
+    "Tank": [
+        "tank", "tanken", "aral", "shell", "esso", " jet ", "star tankstelle",
+        "total energies", "agip", "couche-tard",
+    ],
     "Abos": [
         "spotify", "netflix", "disney", "apple", "prime video", "dazn",
         "kickboxen", "fitnessstudio", "mcfit", "urban sports", "adobe",
         "icloud", "venice", "anthropic", "claude sub", "openai", "chatgpt",
         "higgsfield", "kampfsportzentrum", "sportzentrum",
+        "shopify international", "adac medien",
     ],
     "Selfcare": [
         "friseur", "haare", "nagelstudio", "kosmetik", "drogerie", "dm ",
         "rossmann", "serum", "adapalen", "zahnseide", "pharmacy", "apotheke",
-        "medical",
+        "medical", "niche beauty lab", "mueller bad",
     ],
     "Transport": [
         "parken", "parkhaus", "deutsche bahn", "db vertrieb", "strafzettel",
-        "bus", "bahn", "uber", "taxi", "public trans",
+        "bus", "bahn", "uber", "taxi", "public trans", "easypark",
+        "parkgarage", "bußgeldstelle", "polizeiverwaltungsamt", "triwo hahn",
     ],
     "Sparen/Invest": [
         "trade republic", " tr ", "scalable", "etf", "depot", "sparplan",
+        "bitget",
         # eigene Ueberweisung aufs andere Konto zaehlt laut Nils ebenfalls als
         # Sparen/Invest. Im echten Kontoauszug taucht das als Ueberweisung an
         # "Nils Bendinger" (eigener Name, anderes Konto) auf -- Annahme: JEDE

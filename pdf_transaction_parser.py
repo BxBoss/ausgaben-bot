@@ -104,6 +104,13 @@ _GK_NOISE_PREFIXES = ("Seite ", "Wir machen den Weg frei")
 # Format: (Buchungsdatum als YYYY-MM-DD, Betrag als negative Zahl)
 GK_EXCLUDE_VISA_SETTLEMENTS: set[tuple[str, float]] = set()
 
+# IBANs, die auf das Kreditkartenkonto selbst zeigen -- jede Girokonto-Buchung
+# mit einer dieser IBANs ist eine Ein-/Auszahlung auf die Kreditkarte (manuelle
+# Kartenbegleichung per SecureGo, inkl. fehlgeschlagener/rueckgebuchter
+# Versuche), keine eigenstaendige Ausgabe. Wuerde sonst mit den itemisierten
+# Kreditkartenkonto-Buchungen doppelt zaehlen.
+GK_EXCLUDE_IBANS: set[str] = set()
+
 
 def parse_girokonto_transactions(raw_text: str) -> list[dict[str, Any]]:
     lines = raw_text.splitlines()
@@ -156,7 +163,9 @@ def parse_girokonto_transactions(raw_text: str) -> list[dict[str, Any]]:
                     if merchant and not re.search(r"EREF|MREF|CRED:|IBAN:", merchant):
                         verwendungszweck = merchant
 
-            if (datum, round(betrag, 2)) not in GK_EXCLUDE_VISA_SETTLEMENTS:
+            is_visa_settlement = (datum, round(betrag, 2)) in GK_EXCLUDE_VISA_SETTLEMENTS
+            is_card_account_transfer = any(iban in cont_text for iban in GK_EXCLUDE_IBANS)
+            if not is_visa_settlement and not is_card_account_transfer:
                 transactions.append(
                     {
                         "datum": datum,
