@@ -1,78 +1,87 @@
 # Monatlicher Workflow: Kontoauszug -> Finanzen.xlsx
 
+Stand: komplett neu aufgebaute Datei (ein Blatt "Transaktionen" mit einer
+Excel-Tabelle statt 12 separaten Monatsblättern). Kein Zeilen-Limit mehr --
+neue Buchungen werden einfach unten angehängt, alle Formeln/Diagramme im
+"Dashboard"-Blatt beziehen sich per Tabellen-Referenz automatisch mit.
+
 ## 1. Unterlagen holen
 
-Am Monatsende bzw. sobald verfuegbar:
-- Kontoauszug(-PDF) vom Girokonto
-- Kreditkarten-Umsatzaufstellung(-PDF), falls vorhanden
+Sobald verfügbar, als PDF exportieren ("Umsätze" in der Bank-Onlinebanking-
+Oberfläche, Zeitraum wählen):
+- Girokonto-Umsätze
+- Kreditkartenkonto-Umsätze (eigenes Konto für die Karte -- gleicher
+  Export-Mechanismus, andere IBAN)
 
-Beide als PDF herunterladen (Bank-Login -> Postfach/Dokumente), Speicherort egal
-(z.B. Desktop oder Downloads).
+Speicherort egal (z.B. Desktop).
 
 ## 2. Import laufen lassen
 
 ```bash
 cd "E:\_VAULT_\Claude\Projekte\Finanzen\ausgaben-bot"
-venv\Scripts\python.exe import_kontoauszug.py "<Pfad zur PDF>" <Monat>
+venv\Scripts\python.exe import_kontoauszug.py "<Pfad zur PDF>"
 ```
 
-Beispiel:
-```bash
-venv\Scripts\python.exe import_kontoauszug.py "C:\Users\Nils\Desktop\Kontoauszug_August.pdf" August
-```
+Format (Girokonto / Kreditkartenkonto / alte Einzel-Kreditkartenabrechnung)
+wird automatisch erkannt, ebenso ob es sich um Girokonto- oder
+Kreditkarten-Buchungen handelt (steuert die blaue "Kreditkarte"-Markierung
+in der Tabelle). Bei mehreren PDFs für denselben Zeitraum: Skript einfach
+mehrfach aufrufen, einmal pro Datei.
 
 Das Skript:
-1. liest den PDF-Text
-2. erkennt Buchungszeilen (Datum, Betrag, Verwendungszweck)
-3. kategorisiert regelbasiert (siehe `categorizer_rules.py`)
-4. zeigt alle erkannten Buchungen zur Kontrolle im Terminal, inkl. Duplikat-Warnung
-5. fragt vor dem Schreiben nach Bestaetigung (`j`/N)
-6. traegt bestaetigte Zeilen in die passende Monats-Tabelle von `Finanzen.xlsx` ein
+1. liest den PDF-Text, erkennt Buchungszeilen
+2. kategorisiert regelbasiert (siehe `categorizer_rules.py`)
+3. zeigt alle erkannten Buchungen zur Kontrolle im Terminal, inkl. Duplikat-Warnung
+4. fragt vor dem Schreiben nach Bestätigung (`j`/N)
+5. hängt bestätigte Zeilen unten an die "Transaktionen"-Tabelle an
 
-Bei mehreren Konten/Karten fuer denselben Monat: Skript einfach mehrfach mit
-demselben Monat aufrufen, einmal pro PDF.
+## 3. Wichtig: Kartenabrechnungs-Sammelbuchungen ausschließen
 
-## 3. Kategorien pruefen/korrigieren
+Wenn du **beide** PDFs (Girokonto + Kreditkartenkonto) für denselben Monat
+importierst, muss die Sammelbuchung im Girokonto ("Visa-Sonstiges" bzw. die
+Zeile mit "Kartenabrechnung"/"Überweisung" im Kreditkartenkonto-Export, die
+Geld vom einen aufs andere Konto schiebt) ausgeschlossen werden -- sonst
+zählt der Kartenumsatz doppelt (einmal als Sammelbuchung, einmal itemisiert).
 
-Zeilen mit Kategorie "Sonstiges" sind unbekannte Verkaeufer/Zahlungsempfaenger,
-fuer die keine Regel greift. Direkt in Excel in der `Kategorie`-Spalte
+`pdf_transaction_parser.py` filtert "Überweisung"-Zeilen im
+Kreditkartenkonto-Export sowie Buchungen zur Kreditkarten-IBAN im Girokonto
+automatisch (`GK_EXCLUDE_IBANS`). Nur die **exakte** "Visa-Sonstiges"-Zeile
+im Girokonto (Betrag + Datum) muss weiterhin manuell in
+`GK_EXCLUDE_VISA_SETTLEMENTS` eingetragen werden, siehe Beispiele im
+Skript-Kopf bzw. frühere Importe.
+
+## 4. Kategorien prüfen/korrigieren
+
+Zeilen mit Kategorie "Sonstiges" sind unbekannte Verkäufer/Zahlungsempfänger,
+für die keine Regel greift. Direkt in Excel in der `Kategorie`-Spalte
 korrigieren -- ganz normale Zellen, keine Formel dahinter, keine Nebenwirkung.
 
 **Wiederkehrender Laden/Anbieter falsch/gar nicht erkannt?** Dauerhaft fixen
-statt jeden Monat neu zu korrigieren: in `categorizer_rules.py` (`EXPENSE_KEYWORDS`
-bzw. `INCOME_KEYWORDS`) ein Stichwort zur passenden Kategorie hinzufuegen
-(kleingeschrieben, Teilstring-Suche). Wirkt sofort beim naechsten Import.
+statt jeden Monat neu zu korrigieren: in `categorizer_rules.py`
+(`EXPENSE_KEYWORDS` bzw. `INCOME_KEYWORDS`) ein Stichwort zur passenden
+Kategorie hinzufügen (kleingeschrieben, Teilstring-Suche gegen Name +
+vollständigen Verwendungszweck). Wirkt sofort beim nächsten Import.
 
-## 4. Datei oeffnen & pruefen
+## 5. Datei öffnen & prüfen
 
-Beim ersten Oeffnen in Excel rechnet Excel automatisch neu -- Diagramme und
-Summen in Monats-Blaettern sowie im "Bilanz"-Dashboard aktualisieren sich
-dann von selbst.
+Beim ersten Öffnen in Excel rechnet Excel automatisch neu -- alle Kacheln,
+die Monatsübersicht, die Kategorie-Tabelle und beide Diagramme im Dashboard
+aktualisieren sich dann von selbst, da sie per Tabellen-Referenz
+(`Transaktionen[Spalte]`) rechnen statt auf feste Zeilenbereiche.
 
-## Format-Hinweise fuer den Parser
+## Struktur der Datei
 
-`pdf_transaction_parser.py` ist auf das Format einer VR-Bank
-Kreditkarten-Umsatzaufstellung kalibriert (Datum ohne Jahr, Vorzeichen hinter
-dem Betrag). Ein normaler Girokonto-Kontoauszug kann anders aussehen. Falls
-`import_kontoauszug.py` mit "Keine Buchungszeilen erkannt" abbricht oder das
-Jahr nicht findet: PDF-Rohtext pruefen (`pdf_extractor.extract_text(...)` in
-einer Python-Shell) und das Regex in `pdf_transaction_parser.py` anpassen.
+- **Dashboard**: Kennzahlen-Kacheln (Einnahmen/Ausgaben/Netto/Sparquote),
+  Monatsübersicht-Tabelle, Trend-Diagramm (Einnahmen/Ausgaben + Sparquote),
+  Kreisdiagramm Ausgaben-Kategorien
+- **Transaktionen**: eine Zeile pro Buchung -- Datum, Monat, Typ
+  (Ausgabe/Einnahme), Kategorie, Betrag (negativ=Ausgabe/rot,
+  positiv=Einnahme/grün), Verwendungszweck, Quelle (Girokonto/Kreditkarte,
+  Kreditkarte zusätzlich blau markiert)
 
-## Kapazitaets-Hinweis
+## Konventionen
 
-Jede Monats-Tabelle hat Platz fuer bis zu 258 Ausgaben-Zeilen (Zeile 42-300)
-und 58 Einnahmen-Zeilen (Zeile 42-100) -- die SUMIFS-Formeln in den
-Kategorie-Summen decken genau diesen Bereich ab. Reicht das mal nicht (sehr
-viele Kleinstbuchungen in einem Monat), meldet `xlsx_writer.py` das mit einer
-klaren Fehlermeldung statt still Zeilen zu verlieren -- dann muesste der
-Bereich in `config.py`/`xlsx_writer.py` UND die SUMIFS-Formeln im
-betroffenen Monatsblatt weiter vergroessert werden.
-
-## Einmalig eingerichtete Konventionen
-
-- Sparen/Invest zaehlt: Trade-Republic-Buchungen + die monatliche
-  Ueberweisung aufs andere Konto (Kategorie "Sparen/Invest" im Log,
-  Summe wird per SUMIFS automatisch gezogen)
-- Fixkosten = Tank + Selfcare + Abos (Sparbetrag zaehlt bewusst NICHT mehr mit)
-- Monatsblatt-Namen haben ein Leerzeichen am Ende ("Juli ", nicht "Juli") --
-  Altlast aus der urspruenglichen Datei, `xlsx_writer.py` beruecksichtigt das
+- Sparen/Invest zählt: Trade-Republic-Buchungen, Bitget, + die eigene
+  Überweisung aufs andere Konto (Kategorie "Sparen/Invest")
+- Fixkosten-Konzept aus der alten Datei entfällt -- Kategorien sprechen für
+  sich, keine separate Fixkosten/Variable-Kosten-Aufteilung mehr nötig

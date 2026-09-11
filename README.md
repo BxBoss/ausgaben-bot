@@ -1,36 +1,41 @@
 # Ausgaben-Bot
 
-Kontoauszug-PDF per Drag & Drop hochladen -> Claude extrahiert und kategorisiert
-die Transaktionen -> Ergebnis im Dashboard prüfen/korrigieren -> per Klick ins
-Google Sheet eintragen.
+Kostenloser, regelbasierter Import von Kontoauszug-PDFs (Girokonto +
+Kreditkarte) in eine Finanzen.xlsx mit Dashboard. Kein API-Key, kein Server.
 
-## Setup
+**Aktueller Workflow: siehe [WORKFLOW.md](WORKFLOW.md).**
 
-Siehe [SETUP.md](SETUP.md) für die vollständige Schritt-für-Schritt-Anleitung
-(Anthropic API-Key, Google Cloud Service Account, Sheet-Freigabe).
-
-## Start
-
+Kurzfassung:
 ```bash
-python app.py
+venv\Scripts\python.exe import_kontoauszug.py "<Pfad zur PDF>"
 ```
-
-Dann im Browser: http://127.0.0.1:5000
 
 ## Funktionsweise
 
-1. **Upload**: PDF wird per `pdfplumber` in Rohtext umgewandelt (bankunabhängig).
-2. **KI-Extraktion + Kategorisierung**: Claude zerlegt den Text in einzelne
-   Buchungen (Datum, Empfänger, Verwendungszweck, Betrag, Typ) und ordnet jeder
-   eine Kategorie aus `config.py` zu — in einem Aufruf, strukturierter JSON-Output.
-3. **Dedupe**: Bereits im Sheet vorhandene Buchungen werden per Hash erkannt und
-   im Dashboard vorab abgewählt (verhindert doppelte Einträge bei überlappenden
-   Auszugs-Zeiträumen).
-4. **Kontrolle**: Alle Felder sind im Dashboard editierbar, bevor etwas ins
-   Sheet geschrieben wird.
-5. **Sheets-Eintrag**: Bestätigte Zeilen werden über die Sheets API angehängt.
+1. **PDF-Extraktion**: `pdf_extractor.py` (pdfplumber) liest den Rohtext.
+2. **Parsing**: `pdf_transaction_parser.py` erkennt automatisch eines von drei
+   kalibrierten VR-Bank-Formaten (Girokonto-Umsätze, Kreditkartenkonto-Umsätze,
+   klassische Kreditkarten-Umsatzaufstellung) und extrahiert Datum/Betrag/
+   Verwendungszweck.
+3. **Kategorisierung**: `categorizer_rules.py` -- Keyword-Liste pro Kategorie,
+   gegen Zahlungsempfänger + vollständigen Verwendungszweck geprüft.
+4. **Kontrolle**: Terminal zeigt alle erkannten Buchungen inkl. Duplikat-
+   Warnung, fragt vor dem Schreiben nach Bestätigung.
+5. **Eintrag**: `xlsx_writer.py` hängt bestätigte Zeilen an die
+   "Transaktionen"-Tabelle in Finanzen.xlsx an (ein Blatt, eine Excel-Tabelle,
+   kein Zeilenlimit). Das "Dashboard"-Blatt rechnet per Tabellen-Referenz
+   automatisch mit.
 
 ## Konfiguration
 
-- `config.py` — Kategorienliste (`CATEGORIES`) und Spalten-Mapping (`SHEET_COLUMNS`)
-- `.env` — API-Keys, Sheet-ID (siehe `.env.example`)
+- `categorizer_rules.py` — Kategorisierungs-Keywords, hier erweitern wenn ein
+  Anbieter falsch/gar nicht erkannt wird
+- `pdf_transaction_parser.py` — Format-Parser, hier anpassen bei neuen
+  Kontoauszug-Layouts
+
+## Legacy: Flask-Dashboard mit KI-Kategorisierung (Google Sheets)
+
+Ursprünglicher Ansatz (`app.py`, `ai_processor.py`, `sheets_client.py`) nutzt
+Claude-API + Google Sheets statt der kostenlosen xlsx-Variante. Funktioniert
+weiterhin, ist aber nicht der aktive Workflow -- siehe [SETUP.md](SETUP.md)
+falls doch gebraucht.
