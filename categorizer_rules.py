@@ -16,12 +16,12 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "self service", "vending", "wolt", "lieferando", "pastizzeria",
         "foodstore", "food store", "acai", "myconvenience", "convenience",
         "nom nom", "little greens", "kebab", "8 till late", "instastore",
-        "onami", "dave's", "daves",
+        "onami", "dave's", "daves", "biergarten", "superfood",
     ],
     "Klamotten": [
         "zara", "h&m", "cos", "primark", "vinted", "second hand", "schuhe",
         "zalando", "about you", "c&a", "bershka", "pull&bear", "boutique",
-        "vintage",
+        "vintage", "fashion retail", "intersport",
     ],
     "Flüge": ["flug ", "flugüber", "ryanair", "lufthansa", "eurowings", "easyjet", "condor"],
     "Hotel": ["hotel", "airbnb", "booking.com", "booking "],
@@ -31,7 +31,7 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         # Museen/Sehenswuerdigkeiten/Ausflugsziele -- z.B. "Fort St Elmo
         # National (War Museum)" ist ein Museumsbesuch, keine "Sonstiges"-Buchung.
         "museum", "fort st elmo", "blue grotto", "bluegrotto", "national war",
-        "smash tag", "footloose",
+        "smash tag", "footloose", "stadtpark",
     ],
     "Online": ["amazon", "ebay", "parfuem", "parfüm", "otto", "aliexpress", "shein"],
     "Tank": ["tank", "tanken", "aral", "shell", "esso", " jet ", "star tankstelle", "total energies"],
@@ -39,7 +39,7 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         "spotify", "netflix", "disney", "apple", "prime video", "dazn",
         "kickboxen", "fitnessstudio", "mcfit", "urban sports", "adobe",
         "icloud", "venice", "anthropic", "claude sub", "openai", "chatgpt",
-        "higgsfield",
+        "higgsfield", "kampfsportzentrum", "sportzentrum",
     ],
     "Selfcare": [
         "friseur", "haare", "nagelstudio", "kosmetik", "drogerie", "dm ",
@@ -52,10 +52,13 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
     ],
     "Sparen/Invest": [
         "trade republic", " tr ", "scalable", "etf", "depot", "sparplan",
-        # eigene Ueberweisung aufs andere Konto (100 EUR) zaehlt laut Nils
-        # ebenfalls als Sparen/Invest -- Formulierung im echten Kontoauszug
-        # noch nicht bekannt, hier best-effort, ggf. an echtem PDF kalibrieren.
-        "umbuchung", "eigenes konto", "sparkonto", "tagesgeld",
+        # eigene Ueberweisung aufs andere Konto zaehlt laut Nils ebenfalls als
+        # Sparen/Invest. Im echten Kontoauszug taucht das als Ueberweisung an
+        # "Nils Bendinger" (eigener Name, anderes Konto) auf -- Annahme: JEDE
+        # solche Selbst-Ueberweisung ist eine Sparbuchung. Falls das im
+        # Einzelfall nicht stimmt (z.B. Geld fuers Ausgeben verschoben),
+        # muss die Zeile manuell korrigiert werden.
+        "umbuchung", "eigenes konto", "sparkonto", "tagesgeld", "nils bendinger",
     ],
 }
 

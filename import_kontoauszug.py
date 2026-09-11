@@ -58,7 +58,8 @@ def main() -> None:
 
     for tx in parsed:
         is_income = tx["betrag"] > 0
-        tx["kategorie"] = categorizer_rules.categorize(tx["verwendungszweck"], is_income)
+        match_text = tx.get("match_text", tx["verwendungszweck"])
+        tx["kategorie"] = categorizer_rules.categorize(match_text, is_income)
 
     dupes = existing_keys(args.xlsx, args.monat)
 
