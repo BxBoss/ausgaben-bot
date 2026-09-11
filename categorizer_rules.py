@@ -79,6 +79,7 @@ EXPENSE_KEYWORDS: dict[str, list[str]] = {
         # muss die Zeile manuell korrigiert werden.
         "umbuchung", "eigenes konto", "sparkonto", "tagesgeld", "nils bendinger",
     ],
+    "Bankgebühren/Steuern": ["kapitalertragsteuer", "wiederpräg", "kontoführung"],
 }
 
 INCOME_KEYWORDS: dict[str, list[str]] = {
