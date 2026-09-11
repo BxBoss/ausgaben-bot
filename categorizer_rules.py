@@ -85,6 +85,10 @@ INCOME_KEYWORDS: dict[str, list[str]] = {
     "Gehalt": ["gehalt", "lohn", "urlaubsgeld", "bonus"],
     "Taschengeld": ["taschengeld"],
     "Minijob": ["minijob"],
+    # Bareinzahlungen sind laut Nils immer Trinkgeld (Bargeld aus dem Job,
+    # das aufs Konto eingezahlt wird). " bar " mit Leerzeichen drumherum,
+    # damit es nicht versehentlich in anderen Woertern matcht.
+    "Trinkgeld": [" bar ", "einzahlung"],
 }
 
 EXPENSE_FALLBACK = "Sonstiges"
