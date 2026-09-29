@@ -1,6 +1,25 @@
 # Setup
 
-## 1. Python-Umgebung
+Kostenloser, regelbasierter Ausgaben-Bot: liest Kontoauszug-PDFs, kategorisiert
+Buchungen per Keyword-Regeln (keine KI-API, kein Server), trägt sie in eine
+Excel-Datei mit Dashboard, Monatsübersichten und Diagrammen ein.
+
+## 1. Voraussetzungen
+
+- Python 3.11 oder neuer ([python.org](https://www.python.org/downloads/))
+- Git (optional, nur falls per `git clone` geholt)
+
+## 2. Projekt holen
+
+Per Git:
+```bash
+git clone <repo-url>
+cd ausgaben-bot
+```
+
+Oder: ZIP entpacken und in den Ordner wechseln.
+
+## 3. Python-Umgebung einrichten
 
 ```bash
 python -m venv venv
@@ -8,53 +27,47 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## 2. Anthropic API-Key
+(macOS/Linux: `source venv/bin/activate` statt `venv\Scripts\activate`)
 
-1. https://console.anthropic.com/settings/keys öffnen, Key erstellen.
-2. `.env.example` nach `.env` kopieren und `ANTHROPIC_API_KEY` eintragen.
-
-## 3. Google Cloud Projekt + Sheets API
-
-1. https://console.cloud.google.com/ öffnen, neues Projekt anlegen (z.B. "ausgaben-bot").
-2. Im Projekt: **APIs & Services -> Library** -> "Google Sheets API" suchen -> **Enable**.
-
-## 4. Service Account anlegen
-
-1. **APIs & Services -> Credentials -> Create Credentials -> Service Account**.
-2. Name z.B. `ausgaben-bot`, Rolle kann übersprungen werden (nicht nötig).
-3. Nach dem Anlegen: Service Account öffnen -> Tab **Keys** -> **Add Key -> Create new key -> JSON**.
-4. Die heruntergeladene JSON-Datei umbenennen in `credentials.json` und in den Projektordner legen
-   (`ausgaben-bot/credentials.json`). Diese Datei ist in `.gitignore` und wird **nie** committet.
-5. Die E-Mail-Adresse des Service Accounts notieren (steht in der JSON-Datei als `client_email`,
-   sieht aus wie `ausgaben-bot@<projekt>.iam.gserviceaccount.com`).
-
-## 5. Ziel-Google-Sheet freigeben
-
-1. Das gewünschte Google Sheet öffnen (oder neu anlegen).
-2. **Freigeben** -> die Service-Account-E-Mail aus Schritt 4.5 als **Editor** hinzufügen.
-3. Die Sheet-ID aus der URL kopieren:
-   `https://docs.google.com/spreadsheets/d/`**`<SHEET_ID>`**`/edit`
-4. In `.env`: `GOOGLE_SHEET_ID=<SHEET_ID>` eintragen.
-5. Optional: `GOOGLE_SHEET_NAME` auf den Namen des Tabellenblatts (Reiter) setzen, in das
-   geschrieben werden soll (Default: `Ausgaben`). Der Bot legt die Kopfzeile automatisch an,
-   falls das Blatt leer ist.
-
-## 6. Starten
+## 4. Eigene Finanzen.xlsx anlegen
 
 ```bash
-python app.py
+venv\Scripts\python.exe create_template.py Finanzen.xlsx
 ```
 
-Dashboard öffnet sich unter http://127.0.0.1:5000 — PDF reinziehen, Ergebnis prüfen/korrigieren,
-"Ins Google Sheet eintragen" klicken.
+Erzeugt eine leere Vorlage (Dashboard + 12 Monatsblätter + eine
+"Transaktionen"-Tabelle) -- noch ohne Buchungen, aber mit allen Formeln
+und Diagrammen fertig eingerichtet. Lege sie ab, wo du sie behalten willst
+(z.B. `Dokumente\Finanzen.xlsx`).
 
-## Spalten anpassen
+## 5. Ersten Import machen
 
-Falls dein Sheet eine andere Spaltenreihenfolge/-benennung hat als der Default
-(`Datum | Zahlungsempfaenger | Kategorie | Betrag | Verwendungszweck | Typ | Quelle`),
-einfach `SHEET_COLUMNS` in `config.py` anpassen — Reihenfolge im Dict = Reihenfolge im Sheet.
+Kontoauszug als PDF exportieren (Online-Banking -> "Umsätze"/Kontoauszug,
+Zeitraum wählen, als PDF herunterladen), dann:
+
+```bash
+venv\Scripts\python.exe import_kontoauszug.py "<Pfad zur PDF>" --xlsx "<Pfad zu deiner Finanzen.xlsx>"
+```
+
+Das Skript zeigt dir alle erkannten Buchungen inkl. Kategorie zur Kontrolle
+im Terminal und fragt vor dem Eintragen nach Bestätigung.
+
+Danach: [WORKFLOW.md](WORKFLOW.md) für den laufenden monatlichen Ablauf.
+
+## Wichtig: PDF-Format
+
+`pdf_transaction_parser.py` ist kalibriert auf die Kontoauszug-Formate einer
+VR-Bank (Girokonto-Umsätze-Export, Kreditkartenkonto-Umsätze-Export,
+klassische Kreditkarten-Umsatzaufstellung). Andere Banken formatieren ihre
+PDFs anders -- bricht der Import mit "Keine Buchungszeilen erkannt" ab, muss
+das Regex in `pdf_transaction_parser.py` an das eigene Bank-Format angepasst
+werden. Am einfachsten: PDF-Rohtext ansehen (`pdf_extractor.extract_text(...)`
+in einer Python-Shell) und ein neues Format-Modul nach dem Vorbild der
+bestehenden drei ergänzen.
 
 ## Kategorien anpassen
 
-Die Kategorienliste steht in `config.py` (`CATEGORIES`). Frei erweiterbar/umbenennbar,
-wirkt sich direkt auf die KI-Klassifizierung und das Dropdown im Dashboard aus.
+`categorizer_rules.py` enthält die Keyword-Listen pro Kategorie
+(`EXPENSE_KEYWORDS`/`INCOME_KEYWORDS`). Frei erweiterbar -- ein neues
+Stichwort wirkt sofort beim nächsten Import, und `create_template.py` liest
+die Kategorienliste automatisch von dort, falls die Vorlage neu erzeugt wird.
